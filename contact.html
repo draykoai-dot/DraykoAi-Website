@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact — Drayko AI Solutions</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --navy:        #080f1c;
+      --navy-mid:    #0d1b2a;
+      --navy-card:   rgba(13,27,42,0.75);
+      --navy-light:  #1a3a5c;
+      --orange:      #e8720c;
+      --orange-dark: #c85a00;
+      --orange-lite: #ff922b;
+      --white:       #ffffff;
+      --dim:         rgba(255,255,255,0.65);
+      --faint:       rgba(255,255,255,0.08);
+      --glow:        rgba(232,114,12,0.18);
+      --border:      rgba(232,114,12,0.18);
+    }
+
+    html { scroll-behavior: smooth; }
+    body { background: var(--navy); color: var(--white); font-family: 'Inter', sans-serif; overflow-x: hidden; cursor: none; }
+
+    /* ── CURSOR ── */
+    #cur { position: fixed; width: 10px; height: 10px; background: var(--orange); border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); box-shadow: 0 0 16px var(--orange), 0 0 40px rgba(232,114,12,.4); transition: transform .12s; }
+    #cur-ring { position: fixed; width: 38px; height: 38px; border: 1.5px solid rgba(232,114,12,.5); border-radius: 50%; pointer-events: none; z-index: 9998; transform: translate(-50%,-50%); transition: all .25s ease; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      padding: 1rem 3rem; display: flex; align-items: center; justify-content: space-between;
+      background: rgba(8,15,28,.55); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border); transition: padding .3s, background .3s;
+    }
+    nav.scrolled { padding: .65rem 3rem; background: rgba(8,15,28,.95); }
+    .nav-brand { display: flex; align-items: center; gap: .75rem; text-decoration: none; }
+    .nav-brand img { height: 46px; }
+    .nav-brand-txt { font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700; line-height: 1.15; }
+    .nav-brand-txt small { display: block; font-size: .6rem; font-family: 'Inter', sans-serif; letter-spacing: .35em; color: var(--orange); font-weight: 600; text-transform: uppercase; }
+    .nav-links { display: flex; align-items: center; gap: 2.2rem; list-style: none; }
+    .nav-links a { color: var(--dim); text-decoration: none; font-size: .88rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; transition: color .3s; position: relative; }
+    .nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px; background: var(--orange); transition: width .3s; }
+    .nav-links a:hover { color: var(--white); }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-cta { background: var(--orange) !important; color: var(--white) !important; padding: .55rem 1.4rem; border-radius: 4px; font-weight: 700 !important; box-shadow: 0 0 22px rgba(232,114,12,.35); transition: all .3s !important; }
+    .nav-cta::after { display: none !important; }
+    .nav-cta:hover { background: var(--orange-lite) !important; box-shadow: 0 0 40px rgba(232,114,12,.6) !important; transform: translateY(-1px); }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--white); border-radius: 2px; transition: all .3s; }
+
+    /* ── HERO ── */
+    #contact-hero {
+      position: relative; padding: 14rem 3rem 8rem; text-align: center; overflow: hidden;
+      background: linear-gradient(180deg, #050c18 0%, var(--navy) 100%);
+    }
+    #contact-hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 30%, rgba(232,114,12,.14) 0%, transparent 65%);
+    }
+    /* Hex scale texture */
+    #contact-hero::after {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      background-image:
+        repeating-linear-gradient(60deg, rgba(232,114,12,.022) 0, rgba(232,114,12,.022) 1px, transparent 1px, transparent 28px),
+        repeating-linear-gradient(-60deg, rgba(232,114,12,.022) 0, rgba(232,114,12,.022) 1px, transparent 1px, transparent 28px);
+    }
+    #contact-canvas { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .5; }
+    .hero-inner { position: relative; z-index: 2; max-width: 700px; margin: 0 auto; }
+    .label { font-size: .72rem; font-weight: 700; letter-spacing: .42em; text-transform: uppercase; color: var(--orange); margin-bottom: .9rem; display: block; }
+    .hero-inner h1 { font-family: 'Inter', sans-serif; font-size: clamp(2.2rem, 5vw, 4rem); font-weight: 900; line-height: 1.08; margin-bottom: 1.2rem; }
+    .hero-inner h1 em { color: var(--orange); font-style: normal; }
+    .hero-inner p { color: var(--dim); font-size: 1.08rem; line-height: 1.75; }
+
+    /* ── MAIN CONTACT LAYOUT ── */
+    #contact-main { max-width: 1380px; margin: 0 auto; padding: 6rem 3rem 8rem; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+
+    /* ── FORM GLASS ── */
+    .form-panel {
+      background: rgba(13,27,42,.72); border: 1px solid var(--border); border-radius: 14px;
+      padding: 3rem; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      position: relative; overflow: hidden;
+    }
+    .form-panel::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--orange), transparent);
+    }
+    .form-panel h2 { font-family: 'Inter', sans-serif; font-size: 1.5rem; font-weight: 700; margin-bottom: .5rem; }
+    .form-panel > p { color: var(--dim); font-size: .95rem; margin-bottom: 2.2rem; line-height: 1.65; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-group { display: flex; flex-direction: column; gap: .5rem; margin-bottom: 1.2rem; }
+    .form-group label { font-size: .78rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; color: rgba(255,255,255,.55); }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      background: rgba(255,255,255,.05); border: 1px solid rgba(232,114,12,.2); border-radius: 6px;
+      padding: .85rem 1rem; color: var(--white); font-family: 'Inter', sans-serif;
+      font-size: 1rem; font-weight: 500; transition: all .3s; outline: none;
+      -webkit-appearance: none; appearance: none;
+    }
+    .form-group input::placeholder,
+    .form-group textarea::placeholder { color: rgba(255,255,255,.25); }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus { border-color: var(--orange); background: rgba(232,114,12,.05); box-shadow: 0 0 0 3px rgba(232,114,12,.1); }
+    .form-group select option { background: var(--navy-mid); color: var(--white); }
+    .form-group textarea { resize: vertical; min-height: 120px; }
+
+    .btn-submit {
+      width: 100%; padding: 1rem; background: var(--orange); color: white; border: none;
+      border-radius: 6px; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;
+      letter-spacing: .14em; text-transform: uppercase; cursor: pointer;
+      transition: all .3s; box-shadow: 0 0 28px rgba(232,114,12,.35);
+      margin-top: .5rem;
+    }
+    .btn-submit:hover { background: var(--orange-lite); box-shadow: 0 0 50px rgba(232,114,12,.6); transform: translateY(-2px); }
+    .btn-submit:active { transform: translateY(0); }
+
+    .form-note { margin-top: 1rem; text-align: center; color: rgba(255,255,255,.3); font-size: .8rem; }
+
+    /* Success message */
+    .form-success {
+      display: none; text-align: center; padding: 3rem 1rem;
+    }
+    .form-success .success-ico { font-size: 3rem; margin-bottom: 1rem; }
+    .form-success h3 { font-family: 'Inter', sans-serif; font-size: 1.4rem; margin-bottom: .8rem; color: #4ade80; }
+    .form-success p { color: var(--dim); font-size: .95rem; line-height: 1.65; }
+
+    /* ── INFO PANEL ── */
+    .info-panel { display: flex; flex-direction: column; gap: 2rem; }
+
+    .info-card {
+      background: rgba(13,27,42,.72); border: 1px solid var(--border); border-radius: 12px;
+      padding: 2rem; transition: all .35s; opacity: 0; transform: translateX(30px);
+    }
+    .info-card:hover { border-color: rgba(232,114,12,.4); transform: translateX(0) translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,.25), 0 0 30px var(--glow); }
+
+    .info-ico { font-size: 1.6rem; margin-bottom: 1rem; }
+    .info-card h3 { font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: .5rem; }
+    .info-card p { color: var(--dim); font-size: .88rem; line-height: 1.65; }
+    .info-card a { color: var(--orange); text-decoration: none; }
+    .info-card a:hover { text-decoration: underline; }
+
+    /* Booking placeholder */
+    .booking-card {
+      background: rgba(13,27,42,.72); border: 1px solid var(--border); border-radius: 12px;
+      padding: 2rem; opacity: 0; transform: translateX(30px);
+    }
+    .booking-card h3 { font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: .6rem; }
+    .booking-card p { color: var(--dim); font-size: .88rem; line-height: 1.65; margin-bottom: 1.4rem; }
+    .calendly-mock {
+      background: rgba(255,255,255,.04); border: 1px dashed rgba(232,114,12,.25);
+      border-radius: 8px; padding: 2.5rem 1rem; text-align: center;
+      color: rgba(255,255,255,.3); font-size: .85rem; line-height: 1.6;
+    }
+    .calendly-mock .cal-ico { font-size: 2.5rem; margin-bottom: .8rem; display: block; }
+
+    /* Dragon divider */
+    .dragon-divider {
+      text-align: center; padding: 2rem 0; position: relative;
+      border: 1px solid var(--border); border-radius: 12px;
+      background: rgba(13,27,42,.5);
+      opacity: 0; transform: translateX(30px);
+    }
+    .dragon-divider img { height: 100px; filter: drop-shadow(0 0 30px rgba(232,114,12,.6)); animation: dpulse 3s ease-in-out infinite alternate; }
+    @keyframes dpulse { from { filter: drop-shadow(0 0 20px rgba(232,114,12,.4)); } to { filter: drop-shadow(0 0 50px rgba(232,114,12,.9)); } }
+    .dragon-divider p { color: var(--dim); font-size: .85rem; margin-top: .8rem; font-style: italic; }
+
+    /* ── FOOTER ── */
+    footer { border-top: 1px solid var(--border); background: rgba(5,8,16,.9); padding: 3.5rem 3rem 2rem; }
+    .foot-grid { max-width: 1380px; margin: 0 auto; display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 3rem; padding-bottom: 2.5rem; border-bottom: 1px solid rgba(255,255,255,.05); }
+    .foot-brand img { height: 58px; margin-bottom: 1rem; filter: drop-shadow(0 0 22px rgba(232,114,12,.3)); }
+    .foot-brand p { color: var(--dim); font-size: .88rem; line-height: 1.7; max-width: 240px; }
+    .foot-col h4 { font-family: 'Inter', sans-serif; font-size: .82rem; letter-spacing: .12em; color: var(--orange); margin-bottom: 1.2rem; }
+    .foot-col ul { list-style: none; display: flex; flex-direction: column; gap: .6rem; }
+    .foot-col a { color: var(--dim); text-decoration: none; font-size: .88rem; transition: color .3s; }
+    .foot-col a:hover { color: var(--white); }
+    .foot-bottom { max-width: 1380px; margin: 1.8rem auto 0; display: flex; justify-content: space-between; align-items: center; }
+    .foot-bottom p { color: rgba(255,255,255,.28); font-size: .78rem; }
+    .socials { display: flex; gap: .8rem; }
+    .soc { width: 34px; height: 34px; border: 1px solid rgba(255,255,255,.1); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: var(--dim); text-decoration: none; font-size: .82rem; font-weight: 700; transition: all .3s; }
+    .soc:hover { border-color: var(--orange); color: var(--orange); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) { #contact-main { grid-template-columns: 1fr; } }
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      nav.scrolled { padding: .7rem 1.5rem; }
+      .nav-links { display: none; position: absolute; top: 100%; left: 0; right: 0; background: rgba(8,15,28,.98); flex-direction: column; padding: 2rem 1.5rem; gap: 1.5rem; border-bottom: 1px solid var(--border); }
+      .nav-links.open { display: flex; }
+      .hamburger { display: flex; }
+      #contact-hero { padding: 10rem 1.5rem 5rem; }
+      #contact-main { padding: 4rem 1.5rem 6rem; }
+      .form-row { grid-template-columns: 1fr; }
+      .foot-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur-ring"></div>
+
+<!-- Nav -->
+<nav id="nav">
+  <a href="index.html" class="nav-brand">
+    <img src="DRAYKO AI new LOGO.png" alt="Drayko AI" />
+    <div class="nav-brand-txt">DRAYKO <small>AI Solutions</small></div>
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html#services">Services</a></li>
+    <li><a href="index.html#how">How It Works</a></li>
+    <li><a href="index.html#why">Why Drayko</a></li>
+    <li><a href="contact.html">Contact</a></li>
+    <li><a href="contact.html" class="nav-cta">Book a Call</a></li>
+  </ul>
+  <div class="hamburger" id="hbg">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section id="contact-hero">
+  <canvas id="contact-canvas"></canvas>
+  <div class="hero-inner reveal-up">
+    <span class="label">Get In Touch</span>
+    <h1>Let's Build Your <em>AI Solution</em></h1>
+    <p>Book a free demo, ask a question, or tell us about your business. We'll show you exactly how Drayko AI can transform your customer interactions.</p>
+  </div>
+</section>
+
+<!-- Main Contact Layout -->
+<div id="contact-main">
+
+  <!-- Form -->
+  <div class="form-panel reveal-left">
+    <div id="formWrap">
+      <h2>Send Us a Message</h2>
+      <p>Fill out the form below and our team will get back to you within 24 hours.</p>
+      <form id="contactForm" novalidate>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="fname">First Name *</label>
+            <input type="text" id="fname" placeholder="John" required />
+          </div>
+          <div class="form-group">
+            <label for="lname">Last Name *</label>
+            <input type="text" id="lname" placeholder="Smith" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="biz">Business Name *</label>
+          <input type="text" id="biz" placeholder="Your Company LLC" required />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="email">Email Address *</label>
+            <input type="email" id="email" placeholder="john@company.com" required />
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" placeholder="+1 (555) 000-0000" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="service">Service Interested In *</label>
+          <select id="service" required>
+            <option value="" disabled selected>Select a service...</option>
+            <option value="voice">AI Voice Agents</option>
+            <option value="crm">CRM & Calendar Integration</option>
+            <option value="website">AI Website Builder</option>
+            <option value="full">Full AI Automation Suite</option>
+            <option value="other">Other / General Inquiry</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="msg">Message *</label>
+          <textarea id="msg" placeholder="Tell us about your business and what you're looking to automate..." required></textarea>
+        </div>
+
+        <button type="submit" class="btn-submit">Send Message →</button>
+        <p class="form-note">🔒 Your information is never shared or sold.</p>
+      </form>
+    </div>
+
+    <div class="form-success" id="formSuccess">
+      <div class="success-ico">🐉</div>
+      <h3>Message Received!</h3>
+      <p>Thank you for reaching out. Our team will review your message and get back to you within 24 hours.<br><br>In the meantime, feel free to book a call directly using the calendar on the right.</p>
+    </div>
+  </div>
+
+  <!-- Info Sidebar -->
+  <div class="info-panel">
+
+    <div class="dragon-divider">
+      <img src="DRAYKO AI new LOGO.png" alt="Drayko AI" />
+      <p>"Unleash AI. Dominate your market."</p>
+    </div>
+
+    <div class="info-card">
+      <div class="info-ico">📞</div>
+      <h3>Book a Free Demo Call</h3>
+      <p>See our AI Voice Agent live in action. We'll run a full demo tailored to your industry — no commitment required.</p>
+    </div>
+
+    <div class="info-card">
+      <div class="info-ico">✉️</div>
+      <h3>Email Us Directly</h3>
+      <p>Prefer email? Reach us at <a href="mailto:hello@draykoai.net">hello@draykoai.net</a> — we respond within 24 hours on business days.</p>
+    </div>
+
+    <div class="info-card">
+      <div class="info-ico">⚡</div>
+      <h3>Fast Turnaround</h3>
+      <p>Most AI Voice Agent setups are live within <strong style="color:var(--orange)">5–7 business days</strong>. AI websites delivered in 48–72 hours.</p>
+    </div>
+
+    <div class="booking-card">
+      <h3>📅 Schedule a Call</h3>
+      <p>Pick a time that works for you and we'll walk you through everything — live, no strings attached.</p>
+      <div class="calendly-mock">
+        <span class="cal-ico">📆</span>
+        Calendly booking widget will appear here.<br />
+        <small style="opacity:.6;">Embed your Calendly link to activate.</small>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <div class="foot-grid">
+    <div class="foot-brand">
+      <img src="DRAYKO AI new LOGO.png" alt="Drayko AI" />
+      <p>Empowering businesses with humanlike AI automation that answers, books, and converts — 24/7.</p>
+    </div>
+    <div class="foot-col">
+      <h4>Navigation</h4>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="index.html#services">Services</a></li>
+        <li><a href="index.html#how">How It Works</a></li>
+        <li><a href="index.html#why">Why Drayko</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+    <div class="foot-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="contact.html">Book a Call</a></li>
+        <li><a href="mailto:hello@draykoai.net">hello@draykoai.net</a></li>
+        <li><a href="https://www.draykoai.net">draykoai.net</a></li>
+        <li><a href="#">LinkedIn</a></li>
+        <li><a href="#">Instagram</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <p>© 2025 Drayko AI Solutions. All rights reserved.</p>
+    <div class="socials">
+      <a href="#" class="soc">in</a>
+      <a href="#" class="soc">X</a>
+      <a href="#" class="soc">ig</a>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script>
+/* ── CURSOR ── */
+const cur = document.getElementById('cur');
+const ring = document.getElementById('cur-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; cur.style.left=mx+'px'; cur.style.top=my+'px'; });
+(function tick(){ rx+=(mx-rx)*.09; ry+=(my-ry)*.09; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(tick); })();
+document.querySelectorAll('a,button,input,select,textarea,.info-card,.booking-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.style.transform='translate(-50%,-50%) scale(2)';ring.style.borderColor='rgba(232,114,12,.8)';});
+  el.addEventListener('mouseleave',()=>{cur.style.transform='translate(-50%,-50%) scale(1)';ring.style.borderColor='rgba(232,114,12,.5)';});
+});
+
+/* ── THREE.JS CONTACT HERO ── */
+const canvas = document.getElementById('contact-canvas');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.setClearColor(0x050c18, 1);
+
+const scene = new THREE.Scene();
+const cam = new THREE.PerspectiveCamera(70, innerWidth/innerHeight, 0.1, 1000);
+cam.position.z = 7;
+
+// Lighter particle field for contact page
+const N = 2500;
+const geo = new THREE.BufferGeometry();
+const pos = new Float32Array(N*3);
+const col = new Float32Array(N*3);
+
+for (let i = 0; i < N; i++) {
+  // Spread particles across a wide field
+  pos[i*3]   = (Math.random() - .5) * 20;
+  pos[i*3+1] = (Math.random() - .5) * 12;
+  pos[i*3+2] = (Math.random() - .5) * 10 - 3;
+  const r = Math.random();
+  // mix orange and blue
+  col[i*3]   = r > .6 ? .91 : .06;
+  col[i*3+1] = r > .6 ? .45 : .23;
+  col[i*3+2] = r > .6 ? .05 : .55;
+}
+geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+geo.setAttribute('color',    new THREE.BufferAttribute(col, 3));
+
+const mat = new THREE.PointsMaterial({
+  size: .03, vertexColors: true, transparent: true,
+  opacity: .65, blending: THREE.AdditiveBlending, depthWrite: false
+});
+scene.add(new THREE.Points(geo, mat));
+
+/* Logo watermark — deep background */
+const logoTex = new THREE.TextureLoader().load('DRAYKO AI new LOGO.png');
+const logoMat = new THREE.SpriteMaterial({
+  map: logoTex, transparent: true, opacity: .06,
+  blending: THREE.NormalBlending, depthWrite: false
+});
+const logoSprite = new THREE.Sprite(logoMat);
+logoSprite.scale.set(4.5, 4.5, 1);
+logoSprite.position.set(0, 0, -4);
+scene.add(logoSprite);
+
+let mnx=0, tick=0;
+document.addEventListener('mousemove', e => { mnx = (e.clientX/innerWidth - .5) * 2; });
+
+const heroEl = document.getElementById('contact-hero');
+(function render(){
+  if (!heroEl.getBoundingClientRect) { requestAnimationFrame(render); return; }
+  requestAnimationFrame(render);
+  tick += .003;
+  const pts = scene.children[0];
+  pts.rotation.y = tick * .06 + mnx * .05;
+  pts.rotation.x = tick * .03;
+  logoMat.opacity = .045 + Math.sin(tick * .4) * .015;
+  renderer.render(scene, cam);
+})();
+
+window.addEventListener('resize', ()=>{
+  cam.aspect = innerWidth/innerHeight;
+  cam.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+
+/* ── GSAP SCROLL ── */
+gsap.registerPlugin(ScrollTrigger);
+
+gsap.to('.reveal-up', { opacity:1, y:0, duration:1, ease:'power3.out', delay:.3 });
+gsap.set('.reveal-up', { opacity:0, y:30 });
+
+gsap.to('.reveal-left', {
+  opacity:1, x:0, duration:.95, ease:'power3.out',
+  scrollTrigger: { trigger: '.reveal-left', start: 'top 85%' }
+});
+gsap.set('.reveal-left', { opacity:0, x:-30 });
+
+gsap.to('.info-card, .booking-card, .dragon-divider', {
+  opacity:1, x:0, duration:.7, stagger:.15, ease:'power3.out',
+  scrollTrigger: { trigger: '.info-panel', start: 'top 80%' }
+});
+
+/* ── NAV ── */
+window.addEventListener('scroll', ()=>{
+  document.getElementById('nav').classList.toggle('scrolled', scrollY > 60);
+});
+document.getElementById('hbg').addEventListener('click', ()=>{
+  document.getElementById('navLinks').classList.toggle('open');
+});
+
+/* ── FORM SUBMIT ── */
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const fname   = document.getElementById('fname').value.trim();
+  const email   = document.getElementById('email').value.trim();
+  const service = document.getElementById('service').value;
+  const msg     = document.getElementById('msg').value.trim();
+
+  if (!fname || !email || !service || !msg) {
+    // Simple shake on empty required fields
+    this.querySelectorAll(':invalid').forEach(el => {
+      el.style.borderColor = '#f87171';
+      el.addEventListener('focus', () => el.style.borderColor = '', { once: true });
+    });
+    return;
+  }
+
+  // Show success
+  gsap.to('#formWrap', { opacity:0, y:-20, duration:.4, ease:'power2.in', onComplete: () => {
+    document.getElementById('formWrap').style.display = 'none';
+    const s = document.getElementById('formSuccess');
+    s.style.display = 'block';
+    gsap.from(s, { opacity:0, y:20, duration:.6, ease:'power3.out' });
+  }});
+});
+</script>
+</body>
+</html>

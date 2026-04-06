@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AI Websites — Drayko AI Solutions</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@200;300;400&family=Barlow+Condensed:wght@300;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --orange: #e8720c;
+  --gold: #f5a020;
+  --dark: #07040d;
+  --text: #f2ede8;
+  --muted: rgba(242,237,232,0.42);
+}
+
+html { background: var(--dark); }
+body {
+  font-family: 'Barlow', sans-serif;
+  font-weight: 300;
+  color: var(--text);
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+  cursor: none;
+}
+
+/* ── CURSOR ── */
+#cur {
+  position: fixed; width: 8px; height: 8px;
+  background: var(--gold); border-radius: 50%;
+  pointer-events: none; z-index: 9999;
+  transform: translate(-50%,-50%);
+  transition: width .15s, height .15s;
+}
+#cur-ring {
+  position: fixed; width: 36px; height: 36px;
+  border: 1px solid rgba(245,160,32,0.4); border-radius: 50%;
+  pointer-events: none; z-index: 9998;
+  transform: translate(-50%,-50%);
+  transition: transform .12s ease;
+}
+
+/* ── WEBGL CANVAS ── */
+#gl {
+  position: fixed; top:0; left:0;
+  width:100%; height:100%; z-index:0;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top:0; left:0; right:0;
+  z-index: 200;
+  display: flex; align-items:center; justify-content:space-between;
+  padding: 32px 56px;
+}
+.nav-brand {
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none;
+}
+.nav-brand img { height: 36px; filter: drop-shadow(0 0 12px rgba(232,114,12,.4)); }
+.nav-brand-txt {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px; letter-spacing: .28em;
+  color: var(--text);
+}
+.nav-brand-txt small {
+  display: block; font-family: 'Barlow Condensed', sans-serif;
+  font-size: 9px; letter-spacing: .4em; color: var(--gold);
+  text-transform: uppercase; font-weight: 600;
+}
+.nav-r {
+  display: flex; align-items:center; gap: 36px;
+}
+.nav-r a {
+  font-size: 10px; letter-spacing: .26em; text-transform: uppercase;
+  color: var(--muted); text-decoration: none;
+  transition: color .2s;
+}
+.nav-r a:hover { color: var(--gold); }
+
+/* ── SECTIONS WRAPPER ── */
+#scroller {
+  position: fixed; top:0; left:0;
+  width:100%; height:100%;
+  z-index: 10; pointer-events: none;
+}
+
+/* ── EACH SECTION ── */
+.sec {
+  position: absolute; top:0; left:0;
+  width:100%; height:100%;
+  display: flex; align-items:center; justify-content:center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .6s ease;
+}
+.sec.active { opacity:1; pointer-events:all; }
+
+/* ── HERO ── */
+#s0 { flex-direction: column; text-align:center; }
+.hero-kicker {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px; letter-spacing: .5em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 24px;
+  opacity:0; transform:translateY(20px);
+  transition: opacity .7s .2s, transform .7s .2s;
+}
+#s0.active .hero-kicker { opacity:1; transform:translateY(0); }
+.hero-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(52px, 10vw, 130px);
+  line-height: .9; letter-spacing: .03em;
+  opacity:0; transform:translateY(30px);
+  transition: opacity .8s .4s, transform .8s .4s;
+}
+#s0.active .hero-title { opacity:1; transform:translateY(0); }
+.hero-title .line1 {
+  display: block;
+  background: linear-gradient(160deg, #fff 10%, var(--gold) 55%, var(--orange) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.hero-title .eq {
+  display: block;
+  font-size: clamp(36px, 6vw, 80px);
+  color: rgba(245,160,32,0.35);
+  -webkit-text-fill-color: rgba(245,160,32,0.35);
+  letter-spacing: .1em;
+  margin: 4px 0;
+}
+.hero-title .line2 {
+  display: block;
+  background: linear-gradient(160deg, var(--orange) 0%, var(--gold) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  text-shadow: none;
+}
+.hero-sub {
+  margin-top: 28px;
+  font-size: clamp(14px,1.4vw,17px); font-weight:200;
+  letter-spacing: .06em; color: var(--muted); max-width:480px;
+  opacity:0; transform:translateY(20px);
+  transition: opacity .8s .65s, transform .8s .65s;
+}
+#s0.active .hero-sub { opacity:1; transform:translateY(0); }
+.hero-cta {
+  margin-top: 48px; display:flex; gap:16px; justify-content:center;
+  opacity:0; transform:translateY(20px);
+  transition: opacity .8s .85s, transform .8s .85s;
+}
+#s0.active .hero-cta { opacity:1; transform:translateY(0); }
+.btn {
+  padding:13px 42px;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:11px; letter-spacing:.28em; text-transform:uppercase;
+  border:none; cursor:none; text-decoration: none; display: inline-block;
+  clip-path: polygon(6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%,0 6px);
+}
+.btn-a { background:var(--orange); color:#fff; transition:background .25s; }
+.btn-a:hover { background:var(--gold); }
+.btn-b { background:transparent; border:0.5px solid rgba(242,237,232,0.22); color:var(--muted); transition:border-color .25s,color .25s; }
+.btn-b:hover { border-color:var(--text); color:var(--text); }
+
+/* ── SCROLL INDICATOR ── */
+.scroll-ind {
+  position: absolute; bottom:38px; left:50%; transform:translateX(-50%);
+  display:flex; flex-direction:column; align-items:center; gap:8px;
+  opacity:0; transition: opacity .8s 1.2s;
+}
+#s0.active .scroll-ind { opacity:1; }
+.scroll-ind span { font-size:9px; letter-spacing:.35em; text-transform:uppercase; color:var(--muted); }
+.scroll-bar {
+  width:1px; height:48px;
+  background:linear-gradient(180deg,var(--gold),transparent);
+  animation: scrollAnim 2s infinite;
+}
+@keyframes scrollAnim {
+  0%{transform:scaleY(0);transform-origin:top}
+  50%{transform:scaleY(1);transform-origin:top}
+  51%{transform-origin:bottom}
+  100%{transform:scaleY(0);transform-origin:bottom}
+}
+
+/* ── MANIFESTO ── */
+#s1 { padding: 0 10vw; }
+.manifesto-wrap { max-width:1100px; }
+.sec-tag {
+  font-size:10px; letter-spacing:.45em; text-transform:uppercase;
+  color:var(--gold); margin-bottom:48px;
+  display:flex; align-items:center; gap:16px;
+  opacity:0; transform:translateX(-20px);
+  transition: opacity .7s .1s, transform .7s .1s;
+}
+#s1.active .sec-tag { opacity:1; transform:translateX(0); }
+.sec-tag::before { content:''; width:36px; height:1px; background:var(--gold); }
+.manifesto-big {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(40px,6.5vw,90px);
+  line-height:1.0; color:var(--text);
+  opacity:0; transform:translateY(40px);
+  transition: opacity .9s .25s, transform .9s .25s;
+}
+#s1.active .manifesto-big { opacity:1; transform:translateY(0); }
+.manifesto-big span { color:var(--orange); }
+.manifesto-body {
+  margin-top:48px; display:grid; grid-template-columns:1fr 1fr; gap:32px;
+  opacity:0; transform:translateY(20px);
+  transition: opacity .8s .5s, transform .8s .5s;
+}
+#s1.active .manifesto-body { opacity:1; transform:translateY(0); }
+.manifesto-body p { font-size:14px; line-height:1.9; color:var(--muted); }
+
+/* ── PILLARS ── */
+#s2 { padding: 0 6vw; flex-direction:column; align-items:flex-start; }
+.pillars-title {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(32px,4vw,52px); letter-spacing:.06em;
+  color:var(--muted); margin-bottom:40px;
+  opacity:0; transition:opacity .7s .1s;
+}
+#s2.active .pillars-title { opacity:1; }
+.pillars-grid {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:1px; width:100%;
+  opacity:0; transform:translateY(30px);
+  transition:opacity .8s .3s, transform .8s .3s;
+}
+#s2.active .pillars-grid { opacity:1; transform:translateY(0); }
+.pill {
+  padding:48px 36px;
+  background:rgba(255,255,255,0.022);
+  border-top:1px solid rgba(245,160,32,0.15);
+  position:relative; overflow:hidden;
+  transition:background .3s;
+}
+.pill::after {
+  content:''; position:absolute; top:0;left:0;right:0; height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  transform:scaleX(0); transform-origin:left;
+  transition:transform .5s;
+}
+.pill:hover::after { transform:scaleX(1); }
+.pill:hover { background:rgba(255,255,255,0.038); }
+.pill-n {
+  font-family:'Bebas Neue',sans-serif; font-size:64px;
+  color:rgba(245,160,32,0.1); line-height:1; margin-bottom:18px;
+}
+.pill-h {
+  font-family:'Bebas Neue',sans-serif; font-size:26px;
+  letter-spacing:.05em; color:var(--text); margin-bottom:14px;
+}
+.pill-p { font-size:13px; line-height:1.82; color:var(--muted); }
+
+/* ── STATS ── */
+#s3 {
+  flex-direction:column;
+  border-top:1px solid rgba(232,114,12,0.15);
+  border-bottom:1px solid rgba(232,114,12,0.15);
+  background:rgba(232,114,12,0.03);
+}
+.stats-row {
+  display:flex; justify-content:space-around;
+  width:100%; max-width:1100px; gap:20px;
+  opacity:0; transform:translateY(30px);
+  transition:opacity .8s .2s, transform .8s .2s;
+}
+#s3.active .stats-row { opacity:1; transform:translateY(0); }
+.stat { text-align:center; }
+.stat-n {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(56px,9vw,110px);
+  background:linear-gradient(135deg,var(--gold),var(--orange));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  line-height:1;
+}
+.stat-l {
+  font-size:10px; letter-spacing:.32em; text-transform:uppercase;
+  color:var(--muted); margin-top:10px;
+}
+.stat-div { width:1px; height:80px; background:rgba(245,160,32,0.15); align-self:center; }
+
+/* ── FINAL CTA ── */
+#s4 { flex-direction:column; text-align:center; }
+.final-pre {
+  font-size:11px; letter-spacing:.46em; text-transform:uppercase;
+  color:var(--gold); margin-bottom:22px;
+  opacity:0; transition:opacity .7s .1s;
+}
+#s4.active .final-pre { opacity:1; }
+.final-big {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(60px,12vw,160px);
+  line-height:.9; letter-spacing:.03em; color:var(--text);
+  opacity:0; transform:scale(0.95);
+  transition:opacity .9s .25s, transform .9s .25s;
+}
+#s4.active .final-big { opacity:1; transform:scale(1); }
+.final-sub {
+  margin-top: 20px;
+  font-size: clamp(13px, 1.2vw, 16px); color: var(--muted);
+  letter-spacing: .08em; max-width: 420px;
+  opacity:0; transition: opacity .8s .45s;
+}
+#s4.active .final-sub { opacity:1; }
+.final-cta-row {
+  margin-top:42px; display:flex; gap:16px; justify-content:center;
+  opacity:0; transition: opacity .8s .6s;
+}
+#s4.active .final-cta-row { opacity:1; }
+
+/* ── SECTION DOTS ── */
+#dots {
+  position:fixed; right:36px; top:50%; transform:translateY(-50%);
+  z-index:200; display:flex; flex-direction:column; gap:12px;
+}
+.dot {
+  width:6px; height:6px; border-radius:50%;
+  background:rgba(242,237,232,0.25);
+  cursor:none; transition:background .3s, transform .3s;
+}
+.dot.on { background:var(--gold); transform:scale(1.4); }
+
+/* ── SECTION COUNTER ── */
+#counter {
+  position:fixed; bottom:36px; right:52px; z-index:200;
+  font-family:'Bebas Neue',sans-serif; font-size:13px;
+  letter-spacing:.2em; color:var(--muted);
+}
+#counter span { color:var(--gold); }
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur-ring"></div>
+
+<canvas id="gl"></canvas>
+
+<nav>
+  <a class="nav-brand" href="index.html">
+    <img src="DRAYKO AI new LOGO.png" alt="Drayko AI" />
+    <div class="nav-brand-txt">DRAYKO <small>AI Solutions</small></div>
+  </a>
+  <div class="nav-r">
+    <a href="index.html#services">Services</a>
+    <a href="index.html#how">How It Works</a>
+    <a href="index.html#why">Why Drayko</a>
+    <a href="contact.html" style="color:var(--gold);border:0.5px solid rgba(245,160,32,0.4);padding:8px 20px;">Book a Call</a>
+  </div>
+</nav>
+
+<div id="scroller">
+
+  <!-- 0: HERO -->
+  <div class="sec active" id="s0">
+    <div class="hero-kicker">Drayko AI — Website Division</div>
+    <div class="hero-title">
+      <span class="line1">YOUR SITE</span>
+      <span class="eq">=</span>
+      <span class="line2">YOUR CONVERSIONS</span>
+    </div>
+    <div class="hero-sub">We build premium AI websites with 3D animations, precision design, and one goal — turning visitors into paying clients.</div>
+    <div class="hero-cta">
+      <a href="contact.html" class="btn btn-a">Start Your Project</a>
+      <a href="#" class="btn btn-b" id="seeMore">See How It Works</a>
+    </div>
+    <div class="scroll-ind">
+      <span>Scroll</span>
+      <div class="scroll-bar"></div>
+    </div>
+  </div>
+
+  <!-- 1: MANIFESTO -->
+  <div class="sec" id="s1">
+    <div class="manifesto-wrap">
+      <div class="sec-tag">The Truth About Websites</div>
+      <div class="manifesto-big">
+        Your website is your<br><span>#1 salesperson.</span> Most<br>are losing you money.
+      </div>
+      <div class="manifesto-body">
+        <p>A slow, generic, or outdated website doesn't just fail to impress — it actively costs you clients. Every second of load time, every confusing layout, every missed call-to-action is revenue walking out the door. We fix that, precisely and fast.</p>
+        <p>We build custom websites with 3D animations, smooth scroll effects, and conversion-first architecture. Delivered in 48–72 hours with zero cutting corners. Your site will look like it cost ten times more — and perform like it too.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2: PILLARS -->
+  <div class="sec" id="s2">
+    <div class="pillars-title">What We Deliver</div>
+    <div class="pillars-grid">
+      <div class="pill">
+        <div class="pill-n">01</div>
+        <div class="pill-h">Precision Design</div>
+        <div class="pill-p">Every pixel is intentional. Premium custom sites with 3D animations, immersive scroll effects, and world-class aesthetics built to make your brand unforgettable.</div>
+      </div>
+      <div class="pill">
+        <div class="pill-n">02</div>
+        <div class="pill-h">48–72 Hour Delivery</div>
+        <div class="pill-p">From concept to launch in 48–72 hours. No drawn-out timelines, no missed deadlines — just fast, precise execution that gets your site live while competitors are still in revision cycles.</div>
+      </div>
+      <div class="pill">
+        <div class="pill-n">03</div>
+        <div class="pill-h">Built to Convert</div>
+        <div class="pill-p">Beautiful design that actually drives action. Every layout, every section, every CTA is engineered to move visitors down the funnel and turn traffic into booked appointments.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3: STATS -->
+  <div class="sec" id="s3">
+    <div class="stats-row">
+      <div class="stat">
+        <div class="stat-n">48h</div>
+        <div class="stat-l">Avg. Delivery Time</div>
+      </div>
+      <div class="stat-div"></div>
+      <div class="stat">
+        <div class="stat-n">100%</div>
+        <div class="stat-l">Custom Built</div>
+      </div>
+      <div class="stat-div"></div>
+      <div class="stat">
+        <div class="stat-n">3D</div>
+        <div class="stat-l">Animations Included</div>
+      </div>
+      <div class="stat-div"></div>
+      <div class="stat">
+        <div class="stat-n">24/7</div>
+        <div class="stat-l">Working For You</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4: CONTACT -->
+  <div class="sec" id="s4">
+    <div class="final-pre">Ready to launch?</div>
+    <div class="final-big">LET'S<br>BUILD IT.</div>
+    <div class="final-sub">Tell us about your business and we'll have a premium custom site live within 48–72 hours.</div>
+    <div class="final-cta-row">
+      <a href="contact.html" class="btn btn-a">Start Your Project</a>
+      <a href="index.html" class="btn btn-b">Back to Home</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- Dots nav -->
+<div id="dots">
+  <div class="dot on" data-i="0"></div>
+  <div class="dot" data-i="1"></div>
+  <div class="dot" data-i="2"></div>
+  <div class="dot" data-i="3"></div>
+  <div class="dot" data-i="4"></div>
+</div>
+
+<div id="counter"><span id="cur-n">01</span> / 05</div>
+
+<script>
+// ── CURSOR ──
+const cur = document.getElementById('cur');
+const ring = document.getElementById('cur-ring');
+let rx=0,ry=0,cx=0,cy=0;
+document.addEventListener('mousemove',e=>{cx=e.clientX;cy=e.clientY;cur.style.left=cx+'px';cur.style.top=cy+'px';});
+(function animRing(){rx+=(cx-rx)*.12;ry+=(cy-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing);})();
+
+// ── SECTIONS ──
+const secs = document.querySelectorAll('.sec');
+const dots = document.querySelectorAll('.dot');
+const curN = document.getElementById('cur-n');
+let cur_s = 0, animating = false;
+
+function goTo(i){
+  if(i===cur_s||i<0||i>=secs.length||animating) return;
+  animating=true;
+  secs[cur_s].classList.remove('active');
+  dots[cur_s].classList.remove('on');
+  cur_s=i;
+  secs[cur_s].classList.add('active');
+  dots[cur_s].classList.add('on');
+  curN.textContent=String(cur_s+1).padStart(2,'0');
+  setTimeout(()=>animating=false,700);
+}
+
+document.getElementById('seeMore').addEventListener('click',()=>goTo(1));
+
+let wheelTimer;
+window.addEventListener('wheel',e=>{
+  clearTimeout(wheelTimer);
+  wheelTimer=setTimeout(()=>{
+    if(e.deltaY>0) goTo(cur_s+1);
+    else goTo(cur_s-1);
+  },60);
+},{passive:true});
+
+window.addEventListener('keydown',e=>{
+  if(e.key==='ArrowDown'||e.key==='PageDown') goTo(cur_s+1);
+  if(e.key==='ArrowUp'||e.key==='PageUp') goTo(cur_s-1);
+});
+
+let ty0=0;
+window.addEventListener('touchstart',e=>ty0=e.touches[0].clientY,{passive:true});
+window.addEventListener('touchend',e=>{
+  const dy=ty0-e.changedTouches[0].clientY;
+  if(Math.abs(dy)>50){ if(dy>0)goTo(cur_s+1); else goTo(cur_s-1); }
+},{passive:true});
+
+dots.forEach(d=>d.addEventListener('click',()=>goTo(+d.dataset.i)));
+
+// ── PCB / MOTHERBOARD BACKGROUND ──
+(function(){
+  const canvas = document.getElementById('gl');
+  const ctx    = canvas.getContext('2d');
+  const G      = 42;          // grid cell spacing — generous breathing room
+  const PERIOD = 5.2;         // seconds for one full loop
+  const TRAIL  = 0.28;        // trail = this fraction of path length
+  const STEPS  = 18;          // trail render segments
+  let W, H, cols, rows;
+  let paths = [], nodes = [], chips = [], sigDefs = [];
+
+  // Deterministic RNG — same layout every load / resize
+  let seed = 99;
+  function rng() { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }
+
+  function buildBoard() {
+    seed = 99;
+    cols = Math.ceil(W / G) + 2;
+    rows = Math.ceil(H / G) + 2;
+    paths = []; nodes = []; chips = []; sigDefs = [];
+
+    // ── Sparse organised traces ──
+    const numPaths = Math.floor((cols * rows) / 26);
+    for (let t = 0; t < numPaths; t++) {
+      let cx = Math.floor(rng() * cols);
+      let cy = Math.floor(rng() * rows);
+      const pts  = [{ x: cx * G, y: cy * G }];
+      let horiz  = rng() < 0.5;
+      const segs = 1 + Math.floor(rng() * 5);
+      for (let s = 0; s < segs; s++) {
+        const len = 3 + Math.floor(rng() * 10);
+        const dir = rng() < 0.5 ? 1 : -1;
+        if (horiz) cx = Math.max(1, Math.min(cols - 2, cx + dir * len));
+        else        cy = Math.max(1, Math.min(rows - 2, cy + dir * len));
+        pts.push({ x: cx * G, y: cy * G });
+        nodes.push({ x: cx * G, y: cy * G });
+        horiz = !horiz;
+      }
+      if (pts.length < 2) continue;
+      paths.push(pts);
+      // ~30% of traces get a parallel buddy one cell away → bus effect
+      if (rng() < 0.3) {
+        const off = G * (rng() < 0.5 ? 1 : -1);
+        paths.push(pts.map(p => ({ x: p.x + (horiz ? 0 : off), y: p.y + (horiz ? off : 0) })));
+      }
+    }
+
+    // ── IC chip outlines ──
+    const numChips = 4 + Math.floor((W * H) / 130000);
+    for (let i = 0; i < numChips; i++) {
+      const cw = (4 + Math.floor(rng() * 4)) * G;
+      const ch = (3 + Math.floor(rng() * 2)) * G;
+      chips.push({
+        x: G * 3 + Math.floor(rng() * Math.max(1, W - cw - G * 6)),
+        y: G * 3 + Math.floor(rng() * Math.max(1, H - ch - G * 6)),
+        w: cw, h: ch
+      });
+    }
+
+    // ── One sigDef per path, tiny stagger so they're visually in-sync ──
+    paths.forEach((path, idx) => {
+      const { segs, total } = precompute(path);
+      if (total < 1) return;
+      // Phase offsets are very small (0–0.12) → all pulses travel together
+      sigDefs.push({ path, segs, total, phase: (idx / paths.length) * 0.12 });
+    });
+  }
+
+  // Pre-compute cumulative segment distances for a path
+  function precompute(path) {
+    let total = 0;
+    const segs = [];
+    for (let i = 1; i < path.length; i++) {
+      const dx = path[i].x - path[i-1].x;
+      const dy = path[i].y - path[i-1].y;
+      const l  = Math.hypot(dx, dy);
+      segs.push({ start: total, len: l, i });
+      total += l;
+    }
+    return { segs, total };
+  }
+
+  // Sample a world-space point at distance `dist` along a pre-computed path
+  function posAt(path, segs, dist) {
+    const clamped = Math.max(0, Math.min(dist, segs[segs.length - 1].start + segs[segs.length - 1].len));
+    for (const s of segs) {
+      if (clamped <= s.start + s.len + 0.001) {
+        const f = Math.min((clamped - s.start) / Math.max(s.len, 0.001), 1);
+        const a = path[s.i - 1], b = path[s.i];
+        return { x: a.x + (b.x - a.x) * f, y: a.y + (b.y - a.y) * f };
+      }
+    }
+    return { ...path[path.length - 1] };
+  }
+
+  function resize() {
+    W = canvas.width  = innerWidth;
+    H = canvas.height = innerHeight;
+    buildBoard();
+  }
+
+  let startT = null;
+  function frame(now) {
+    requestAnimationFrame(frame);
+    if (!startT) startT = now;
+    const elapsed = (now - startT) * 0.001;
+
+    // Global loop position 0→1
+    const loopT = (elapsed / PERIOD) % 1.0;
+
+    // ── Background ──
+    ctx.fillStyle = '#04070e';
+    ctx.fillRect(0, 0, W, H);
+
+    // ── Dot-grid substrate ──
+    ctx.fillStyle = 'rgba(232,114,12,0.03)';
+    for (let x = G; x < W; x += G)
+      for (let y = G; y < H; y += G) {
+        ctx.beginPath(); ctx.arc(x, y, 0.65, 0, Math.PI * 2); ctx.fill();
+      }
+
+    ctx.lineJoin = 'round';
+    ctx.lineCap  = 'round';
+
+    // ── Traces: glow pass then sharp pass ──
+    ctx.save();
+    ctx.shadowBlur  = 4;
+    ctx.shadowColor = 'rgba(232,114,12,0.18)';
+    ctx.lineWidth   = 1.6;
+    ctx.strokeStyle = 'rgba(232,114,12,0.04)';
+    for (const p of paths) {
+      ctx.beginPath(); ctx.moveTo(p[0].x, p[0].y);
+      for (let i = 1; i < p.length; i++) ctx.lineTo(p[i].x, p[i].y);
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    ctx.lineWidth   = 1.1;
+    ctx.strokeStyle = 'rgba(232,114,12,0.1)';
+    for (const p of paths) {
+      ctx.beginPath(); ctx.moveTo(p[0].x, p[0].y);
+      for (let i = 1; i < p.length; i++) ctx.lineTo(p[i].x, p[i].y);
+      ctx.stroke();
+    }
+
+    // ── Via nodes ──
+    for (const n of nodes) {
+      ctx.save();
+      ctx.shadowBlur  = 5; ctx.shadowColor = 'rgba(245,160,32,0.25)';
+      ctx.strokeStyle = 'rgba(245,160,32,0.18)'; ctx.lineWidth = 0.9;
+      ctx.beginPath(); ctx.arc(n.x, n.y, 4, 0, Math.PI * 2); ctx.stroke();
+      ctx.restore();
+      ctx.fillStyle = 'rgba(245,160,32,0.12)';
+      ctx.beginPath(); ctx.arc(n.x, n.y, 1.7, 0, Math.PI * 2); ctx.fill();
+    }
+
+    // ── IC chips ──
+    for (const c of chips) {
+      ctx.save();
+      ctx.shadowBlur  = 6; ctx.shadowColor = 'rgba(232,114,12,0.08)';
+      ctx.fillStyle   = 'rgba(232,114,12,0.015)';
+      ctx.strokeStyle = 'rgba(232,114,12,0.11)'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.rect(c.x, c.y, c.w, c.h); ctx.fill(); ctx.stroke();
+      ctx.restore();
+      // Pin-1 notch
+      ctx.strokeStyle = 'rgba(245,160,32,0.28)'; ctx.lineWidth = 0.8;
+      ctx.beginPath(); ctx.arc(c.x + 10, c.y, 5, 0, Math.PI); ctx.stroke();
+      // Pins top/bottom
+      ctx.strokeStyle = 'rgba(232,114,12,0.13)'; ctx.lineWidth = 1;
+      const ph = Math.floor(c.w / G) + 1, ps = c.w / (ph + 1);
+      for (let p = 1; p <= ph; p++) {
+        const px = c.x + ps * p;
+        ctx.beginPath(); ctx.moveTo(px, c.y);       ctx.lineTo(px, c.y - 8);       ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(px, c.y + c.h); ctx.lineTo(px, c.y + c.h + 8); ctx.stroke();
+      }
+      // Pins left/right
+      const pv = Math.floor(c.h / G), pvs = c.h / (pv + 1);
+      for (let p = 1; p <= pv; p++) {
+        const py = c.y + pvs * p;
+        ctx.beginPath(); ctx.moveTo(c.x,       py); ctx.lineTo(c.x - 8,       py); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(c.x + c.w, py); ctx.lineTo(c.x + c.w + 8, py); ctx.stroke();
+      }
+      // Interior detail lines
+      ctx.strokeStyle = 'rgba(232,114,12,0.045)'; ctx.lineWidth = 0.5;
+      for (let lx = c.x + G; lx < c.x + c.w; lx += G) {
+        ctx.beginPath(); ctx.moveTo(lx, c.y + 2); ctx.lineTo(lx, c.y + c.h - 2); ctx.stroke();
+      }
+    }
+
+    // ── Synchronised signal pulses ──
+    // Each sigDef shares the same loop clock — they all travel together.
+    for (const sd of sigDefs) {
+      // Individual progress = global loop + tiny stagger
+      const prog     = ((loopT + sd.phase) % 1.0 + 1.0) % 1.0;
+      const headDist = prog * sd.total;
+      const trailLen = sd.total * TRAIL;
+
+      // Fade alpha gently at loop boundaries (first/last 6%)
+      const fadeIn  = Math.min(prog / 0.06, 1);
+      const fadeOut = Math.min((1 - prog) / 0.06, 1);
+      const alpha   = Math.min(fadeIn, fadeOut);
+      if (alpha <= 0) continue;
+
+      // ── Trail — computed mathematically each frame (frame-rate independent) ──
+      for (let j = 1; j <= STEPS; j++) {
+        const pct   = j / STEPS;                          // 0→1, 1 = head
+        const d0    = Math.max(0, headDist - trailLen * (1 - (j - 1) / STEPS));
+        const d1    = Math.max(0, headDist - trailLen * (1 - pct));
+        if (d0 === d1) continue;
+        const p0    = posAt(sd.path, sd.segs, d0);
+        const p1    = posAt(sd.path, sd.segs, d1);
+        const a     = pct * pct * 0.82 * alpha;           // quadratic fade, brightest at head
+        // Color shifts from deep orange (tail) to bright gold (head)
+        const r     = Math.round(232 + (255 - 232) * pct);
+        const g2    = Math.round(114 + (210 - 114) * pct);
+        const b     = Math.round(12  + (80  - 12 ) * pct);
+        ctx.strokeStyle = `rgba(${r},${g2},${b},${a.toFixed(3)})`;
+        ctx.lineWidth   = 0.5 + 1.8 * pct;
+        ctx.beginPath(); ctx.moveTo(p0.x, p0.y); ctx.lineTo(p1.x, p1.y); ctx.stroke();
+      }
+
+      // ── Head — soft outer glow → warm inner halo → hot core ──
+      const hp  = posAt(sd.path, sd.segs, headDist);
+
+      const g1  = ctx.createRadialGradient(hp.x, hp.y, 0, hp.x, hp.y, 24);
+      g1.addColorStop(0,   `rgba(255,215,80,${(alpha * 0.65).toFixed(2)})`);
+      g1.addColorStop(0.45,`rgba(232,114,12,${(alpha * 0.2).toFixed(2)})`);
+      g1.addColorStop(1,   'rgba(0,0,0,0)');
+      ctx.fillStyle = g1;
+      ctx.beginPath(); ctx.arc(hp.x, hp.y, 24, 0, Math.PI * 2); ctx.fill();
+
+      const g2b = ctx.createRadialGradient(hp.x, hp.y, 0, hp.x, hp.y, 8);
+      g2b.addColorStop(0, `rgba(255,245,170,${alpha.toFixed(2)})`);
+      g2b.addColorStop(1, 'rgba(255,180,40,0)');
+      ctx.fillStyle = g2b;
+      ctx.beginPath(); ctx.arc(hp.x, hp.y, 8, 0, Math.PI * 2); ctx.fill();
+
+      // White-hot pixel
+      ctx.fillStyle = `rgba(255,255,240,${(alpha * 0.92).toFixed(2)})`;
+      ctx.beginPath(); ctx.arc(hp.x, hp.y, 1.6, 0, Math.PI * 2); ctx.fill();
+    }
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
