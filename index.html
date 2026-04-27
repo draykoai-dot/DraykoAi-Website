@@ -117,10 +117,19 @@
     }
     .hero-title {
       font-family: 'Inter', sans-serif; font-size: clamp(2.4rem, 6vw, 5rem); font-weight: 900;
-      line-height: 1.04; margin-bottom: 1.4rem; opacity: 0; transform: translateY(24px);
+      line-height: 1.04; margin-bottom: 3.5rem; opacity: 0; transform: translateY(24px);
       text-shadow: 0 0 60px rgba(232,114,12,.25);
     }
     .hero-title .fire { color: var(--orange); display: block; }
+    .hero-brand-tag {
+      font-size: clamp(1.6rem, 3vw, 2.6rem); font-weight: 900; letter-spacing: .04em;
+      text-transform: uppercase; color: var(--orange);
+      text-shadow:
+        0 0 28px rgba(232,114,12,0.55),
+        0 0 70px rgba(232,114,12,0.2);
+      opacity: 0; transform: translateY(16px);
+      margin-bottom: 1.6rem;
+    }
     .hero-sub {
       font-size: 1.1rem; color: var(--dim); max-width: 580px; margin: 0 auto 2.5rem;
       line-height: 1.75; font-weight: 400; opacity: 0; transform: translateY(20px);
@@ -134,7 +143,7 @@
     .btn-ghost:hover { border-color: var(--orange); color: var(--orange); box-shadow: 0 0 22px rgba(232,114,12,.18); transform: translateY(-2px); }
 
     .scroll-hint {
-      position: absolute; bottom: 2.2rem; left: 50%; transform: translateX(-50%);
+      position: absolute; bottom: 0.6rem; left: 50%; transform: translateX(-50%);
       display: flex; flex-direction: column; align-items: center; gap: .5rem;
       opacity: .45; animation: shint 2.2s ease-in-out infinite;
     }
@@ -360,30 +369,32 @@
     .solutions-glow {
       color: #fff;
       text-shadow:
-        0 0 6px #fff,
-        0 0 12px #fff,
-        0 0 22px #fff,
-        0 0 44px var(--orange),
-        0 0 80px var(--orange),
-        0 0 110px var(--orange),
-        0 0 160px var(--orange);
+        0 0 4px #fff,
+        0 0 10px #fff,
+        0 0 20px #fff,
+        0 0 40px #fff,
+        0 0 60px var(--orange),
+        0 0 100px var(--orange),
+        0 0 140px var(--orange),
+        0 0 200px var(--orange);
       animation: neonFlicker 7s infinite;
     }
     @keyframes neonFlicker {
       0%, 17%, 19%, 22%, 52%, 56%, 100% {
         color: #fff;
         text-shadow:
-          0 0 6px #fff,
-          0 0 12px #fff,
-          0 0 22px #fff,
-          0 0 44px var(--orange),
-          0 0 80px var(--orange),
-          0 0 110px var(--orange),
-          0 0 160px var(--orange);
+          0 0 4px #fff,
+          0 0 10px #fff,
+          0 0 20px #fff,
+          0 0 40px #fff,
+          0 0 60px var(--orange),
+          0 0 100px var(--orange),
+          0 0 140px var(--orange),
+          0 0 200px var(--orange);
       }
       18%, 21%, 54% {
-        color: rgba(255,255,255,0.25);
-        text-shadow: none;
+        color: rgba(255,255,255,0.35);
+        text-shadow: 0 0 10px #fff, 0 0 30px var(--orange);
       }
     }
   </style>
@@ -427,6 +438,7 @@
       AI POWERED <span class="solutions-glow">SOLUTIONS</span>
       <span class="fire">FOR YOUR BUSINESS</span>
     </h1>
+    <p class="hero-brand-tag">Drayko AI Solutions</p>
     <p class="hero-sub">Custom built premium animated websites and humanlike AI agents — at a fraction of the cost.</p>
     <div class="hero-ctas">
       <a href="contact.html" class="btn btn-fire">Book a Free Call</a>
@@ -638,10 +650,11 @@ window.addEventListener('resize', () => {
 /* ───── HERO ENTRANCE ───── */
 function animateHero() {
   gsap.timeline()
-    .to('.hero-eyebrow', { opacity:1, y:0, duration:.8, ease:'power3.out' })
-    .to('.hero-title',   { opacity:1, y:0, duration:.9, ease:'power3.out' }, '-=.45')
-    .to('.hero-sub',     { opacity:1, y:0, duration:.8, ease:'power3.out' }, '-=.5')
-    .to('.hero-ctas',    { opacity:1, y:0, duration:.7, ease:'power3.out' }, '-=.4');
+    .to('.hero-eyebrow',    { opacity:1, y:0, duration:.8, ease:'power3.out' })
+    .to('.hero-title',      { opacity:1, y:0, duration:.9, ease:'power3.out' }, '-=.45')
+    .to('.hero-brand-tag',  { opacity:1, y:0, duration:.7, ease:'power3.out' }, '-=.4')
+    .to('.hero-sub',        { opacity:1, y:0, duration:.8, ease:'power3.out' }, '-=.45')
+    .to('.hero-ctas',       { opacity:1, y:0, duration:.7, ease:'power3.out' }, '-=.4');
 }
 
 /* ───── GSAP SCROLL ───── */
