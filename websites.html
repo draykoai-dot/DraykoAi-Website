@@ -176,10 +176,41 @@ nav {
   border: none; cursor: none; text-decoration: none; display: inline-block;
   border-radius: 4px; transition: all .3s;
 }
-.btn-a { background: var(--orange); color: #fff; box-shadow: 0 0 28px rgba(232,114,12,.4), 0 4px 20px rgba(0,0,0,.3); }
-.btn-a:hover { background: var(--gold); box-shadow: 0 0 40px rgba(245,160,32,.6); transform: translateY(-2px); }
-.btn-b { background: transparent; border: 1.5px solid rgba(242,237,232,0.25); color: rgba(242,237,232,0.75); }
-.btn-b:hover { border-color: var(--orange); color: var(--orange); box-shadow: 0 0 22px rgba(232,114,12,.18); transform: translateY(-2px); }
+.btn-fire {
+  --bx: -999px; --by: -999px; --hue: 260; --spot-a: 0;
+  background-image: radial-gradient(200px 200px at var(--bx) var(--by), hsl(var(--hue) 100% 65% / calc(0.22 * var(--spot-a))), transparent);
+  background-color: #07070e;
+  color: #e8eaf0;
+  padding: 1.15rem 3.8rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.1);
+  position: relative; overflow: visible;
+  box-shadow: 0 4px 24px rgba(0,0,0,.6);
+  font-size: 1rem; font-weight: 700;
+  letter-spacing: .12em; text-transform: uppercase;
+  font-family: 'Inter', sans-serif;
+  text-decoration: none; display: inline-block;
+  cursor: none;
+  transform-style: preserve-3d;
+  transition: transform .15s ease-out, box-shadow .3s;
+}
+.btn-fire:hover { box-shadow: 0 8px 32px rgba(0,0,0,.75); transform: translateY(-2px); }
+.btn-tilt-wrap { display: inline-block; perspective: 600px; }
+.btn-fire::before {
+  content: ""; pointer-events: none; position: absolute;
+  inset: -1px; border-radius: 11px; padding: 1px;
+  background: radial-gradient(130px 130px at calc(var(--bx) + 1px) calc(var(--by) + 1px), hsl(var(--hue) 100% 70% / calc(0.95 * var(--spot-a))), transparent 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+}
+.btn-fire::after {
+  content: ""; pointer-events: none; position: absolute;
+  inset: -4px; border-radius: 14px;
+  background: radial-gradient(100px 100px at calc(var(--bx) + 4px) calc(var(--by) + 4px), hsl(var(--hue) 100% 60% / calc(0.4 * var(--spot-a))), transparent);
+  filter: blur(10px); z-index: -1;
+}
 
 /* ── SCROLL INDICATOR ── */
 .scroll-ind {
@@ -252,8 +283,12 @@ nav {
 #s2.active .pillars-grid { opacity:1; transform:translateY(0); }
 .pill {
   padding:48px 36px;
-  background:rgba(255,255,255,0.022);
-  border-top:1px solid rgba(245,160,32,0.15);
+  background: rgba(4,7,14,0.82);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-top:1px solid rgba(245,160,32,0.22);
+  border-left:1px solid rgba(245,160,32,0.08);
+  border-right:1px solid rgba(245,160,32,0.08);
+  border-bottom:1px solid rgba(245,160,32,0.06);
   position:relative; overflow:hidden;
   transition:background .3s;
 }
@@ -264,13 +299,27 @@ nav {
   transition:transform .5s;
 }
 .pill:hover::after { transform:scaleX(1); }
-.pill:hover { background:rgba(255,255,255,0.038); }
+.pill:hover {
+  background: rgba(4,7,14,0.88);
+  border-top-color: rgba(245,160,32,0.55);
+  border-left-color: rgba(245,160,32,0.18);
+  border-right-color: rgba(245,160,32,0.18);
+  box-shadow: 0 0 28px rgba(232,114,12,0.08), inset 0 0 20px rgba(232,114,12,0.04);
+}
 .pill-n {
   font-family:'Bebas Neue',sans-serif; font-size:64px;
   background: linear-gradient(135deg, var(--gold), var(--orange));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 8px rgba(245,160,32,0.5)) drop-shadow(0 0 20px rgba(232,114,12,0.25));
   line-height:1; margin-bottom:18px;
+  animation: pillFlicker 7s infinite;
+}
+@keyframes pillFlicker {
+  0%, 17%, 19%, 22%, 52%, 56%, 100% {
+    filter: drop-shadow(0 0 6px rgba(245,160,32,0.95)) drop-shadow(0 0 22px rgba(232,114,12,0.65)) drop-shadow(0 0 50px rgba(232,114,12,0.3));
+  }
+  18%, 21%, 54% {
+    filter: drop-shadow(0 0 2px rgba(245,160,32,0.2)) drop-shadow(0 0 5px rgba(232,114,12,0.1));
+  }
 }
 .pill-h {
   font-family:'Bebas Neue',sans-serif; font-size:26px;
@@ -391,8 +440,8 @@ nav {
     </div>
     <div class="hero-sub">We build premium AI websites with 3D animations, precision design, and one goal — turning visitors into paying clients.</div>
     <div class="hero-cta">
-      <a href="contact.html" class="btn btn-a">Start Your Project</a>
-      <a href="#" class="btn btn-b" id="seeMore">See How It Works</a>
+      <a href="contact.html" class="btn-fire">Start Your Project</a>
+      <a href="#" class="btn-fire" id="seeMore">See How It Works</a>
     </div>
     <div class="scroll-ind">
       <span>Scroll</span>
@@ -466,8 +515,8 @@ nav {
     <div class="final-big">LET'S<br>BUILD IT.</div>
     <div class="final-sub">Tell us about your business and we'll have a premium custom site live within an average of 72 hours.</div>
     <div class="final-cta-row">
-      <a href="contact.html" class="btn btn-a">Start Your Project</a>
-      <a href="index.html" class="btn btn-b">Back to Home</a>
+      <a href="contact.html" class="btn-fire">Start Your Project</a>
+      <a href="index.html" class="btn-fire">Back to Home</a>
     </div>
   </div>
 
@@ -534,6 +583,40 @@ window.addEventListener('touchend',e=>{
 },{passive:true});
 
 dots.forEach(d=>d.addEventListener('click',()=>goTo(+d.dataset.i)));
+
+// ── SPOTLIGHT BUTTON ──
+const SPOT_PROX = 130;
+document.addEventListener('mousemove', e => {
+  const cx = e.clientX, cy = e.clientY;
+  document.querySelectorAll('.btn-fire').forEach(btn => {
+    const r = btn.getBoundingClientRect();
+    const nx = Math.max(r.left, Math.min(cx, r.right));
+    const ny = Math.max(r.top,  Math.min(cy, r.bottom));
+    const dist = Math.hypot(cx - nx, cy - ny);
+    if (dist > SPOT_PROX) {
+      btn.style.setProperty('--spot-a', '0');
+    } else {
+      btn.style.setProperty('--bx', (nx - r.left) + 'px');
+      btn.style.setProperty('--by', (ny - r.top)  + 'px');
+      btn.style.setProperty('--spot-a', (1 - dist / SPOT_PROX).toFixed(3));
+      btn.style.setProperty('--hue', Math.round(220 + (cx / window.innerWidth) * 120));
+    }
+  });
+});
+document.querySelectorAll('.btn-tilt-wrap').forEach(wrap => {
+  const btn = wrap.querySelector('.btn-fire');
+  if (!btn) return;
+  wrap.addEventListener('mousemove', e => {
+    const r = btn.getBoundingClientRect();
+    const dx = (e.clientX - (r.left + r.width  / 2)) / (r.width  / 2);
+    const dy = (e.clientY - (r.top  + r.height / 2)) / (r.height / 2);
+    btn.style.transform = `perspective(600px) rotateY(${dx * 14}deg) rotateX(${-dy * 9}deg) scale(1.05)`;
+  });
+  wrap.addEventListener('mouseleave', () => {
+    btn.style.transform = 'perspective(600px) rotateY(0deg) rotateX(0deg) scale(1)';
+    setTimeout(() => { btn.style.transform = ''; }, 200);
+  });
+});
 
 // ── PCB / MOTHERBOARD BACKGROUND ──
 (function(){

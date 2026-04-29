@@ -122,11 +122,21 @@
     }
     .hero-title .fire { color: var(--orange); display: block; }
     .hero-brand-tag {
-      font-size: clamp(1.6rem, 3vw, 2.6rem); font-weight: 900; letter-spacing: .04em;
-      text-transform: uppercase; color: rgba(200,210,225,0.55);
-      text-shadow: 0 0 20px rgba(160,180,210,0.55), 0 0 60px rgba(160,180,210,0.22), 0 0 120px rgba(160,180,210,0.1);
+      font-size: clamp(1.6rem, 3vw, 2.6rem); font-weight: 900; letter-spacing: .1em;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, var(--orange) 0%, #ffb347 40%, #fff 60%, var(--orange-lite) 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 18px rgba(232,114,12,0.55)) drop-shadow(0 0 55px rgba(232,114,12,0.22));
+      animation: brandShimmer 4s linear infinite;
       opacity: 0; transform: translateY(16px);
       margin-bottom: 1.6rem;
+    }
+    @keyframes brandShimmer {
+      0%   { background-position: 200% center; }
+      100% { background-position: 0%   center; }
     }
     .hero-sub {
       font-size: 1.1rem; color: var(--dim); max-width: 580px; margin: 0 auto 2.5rem;
@@ -637,16 +647,6 @@ const mat = new THREE.PointsMaterial({
 const pts = new THREE.Points(geo, mat);
 scene.add(pts);
 
-/* Logo watermark — deep background */
-const logoTex = new THREE.TextureLoader().load('DRAYKO AI new LOGO.png');
-const logoMat = new THREE.SpriteMaterial({
-  map: logoTex, transparent: true, opacity: .16,
-  blending: THREE.AdditiveBlending, depthWrite: false
-});
-const logoSprite = new THREE.Sprite(logoMat);
-logoSprite.scale.set(7, 7, 1);
-logoSprite.position.set(0, 0, -3.5);
-scene.add(logoSprite);
 
 let mnx = 0, mny = 0;
 document.addEventListener('mousemove', e => {
@@ -661,9 +661,6 @@ let tick = 0;
 
   pts.rotation.y = tick * .12 + mnx * .1;
   pts.rotation.x = mny * .05;
-
-  // Gentle logo breathe
-  logoMat.opacity = .13 + Math.sin(tick * .35) * .04;
 
   // Animate subset of particles (every 15th for perf)
   const pa = geo.attributes.position.array;
