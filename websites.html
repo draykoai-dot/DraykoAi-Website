@@ -226,12 +226,12 @@ nav {
 #s1.active .manifesto-big { opacity:1; transform:translateY(0); }
 .manifesto-big span { color:var(--orange); }
 .manifesto-body {
-  margin-top:48px; display:grid; grid-template-columns:1fr 1fr; gap:32px;
+  margin-top:48px; max-width:640px; margin-left:auto; margin-right:auto;
   opacity:0; transform:translateY(20px);
   transition: opacity .8s .5s, transform .8s .5s;
 }
 #s1.active .manifesto-body { opacity:1; transform:translateY(0); }
-.manifesto-body p { font-size:14px; line-height:1.9; color:var(--muted); text-shadow: 0 1px 10px rgba(0,0,0,0.95), 0 0 24px rgba(0,0,0,0.9); }
+.manifesto-body p { font-size:16px; line-height:1.85; color:rgba(255,255,255,0.75); text-align:center; text-shadow: 0 1px 12px rgba(0,0,0,0.95), 0 0 30px rgba(0,0,0,0.9); }
 
 /* ── PILLARS ── */
 #s2 { padding: 0 6vw; flex-direction:column; align-items:flex-start; }
@@ -360,6 +360,12 @@ nav {
 </head>
 <body>
 
+<!-- Ziyad Changes Banner -->
+<div style="position:fixed;top:0;left:0;right:0;z-index:99999;background:#e8720c;color:#fff;text-align:center;padding:8px 16px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;box-shadow:0 2px 12px rgba(0,0,0,.4);">
+  ⚡ Ziyad Changes — Preview Only
+</div>
+<div style="height:36px"></div>
+
 <div id="cur"></div>
 <div id="cur-ring"></div>
 
@@ -404,11 +410,10 @@ nav {
     <div class="manifesto-wrap">
       <div class="sec-tag">The Truth About Websites</div>
       <div class="manifesto-big">
-        Your website is your<br><span>#1 salesperson.</span> Most<br>are losing you money.
+        Your website is your<br><span>#1 salesperson.</span><br>It is most likely losing you money.
       </div>
       <div class="manifesto-body">
-        <p>A slow, generic, or outdated website doesn't just fail to impress — it actively costs you clients. Every second of load time, every confusing layout, every missed call-to-action is revenue walking out the door. We fix that, precisely and fast.</p>
-        <p>We build custom websites with 3D animations, smooth scroll effects, and conversion-first architecture. Delivered in 48–72 hours with zero cutting corners. Your site will look like it cost ten times more — and perform like it too.</p>
+        <p>A slow, generic, or outdated website could be losing you hundreds to thousands of leads — boring your customers, hurting your brand image, and costing you real revenue. Every second of load time, every confusing layout, every missed call-to-action is money walking out the door. We build custom websites with 3D animations, smooth scroll effects, and conversion-first architecture that fix all of that — precisely and fast.</p>
       </div>
     </div>
   </div>
@@ -424,8 +429,8 @@ nav {
       </div>
       <div class="pill">
         <div class="pill-n">02</div>
-        <div class="pill-h">48–72 Hour Delivery</div>
-        <div class="pill-p">From concept to launch in 48–72 hours. No drawn-out timelines, no missed deadlines — just fast, precise execution that gets your site live while competitors are still in revision cycles.</div>
+        <div class="pill-h">Avg. 72 Hour Delivery</div>
+        <div class="pill-p">From concept to launch in an average of 72 hours. No drawn-out timelines, no missed deadlines — just fast, precise execution that gets your site live while competitors are still in revision cycles.</div>
       </div>
       <div class="pill">
         <div class="pill-n">03</div>
@@ -439,7 +444,7 @@ nav {
   <div class="sec" id="s3">
     <div class="stats-row">
       <div class="stat">
-        <div class="stat-n">48h</div>
+        <div class="stat-n">~72h</div>
         <div class="stat-l">Avg. Delivery Time</div>
       </div>
       <div class="stat-div"></div>
@@ -464,7 +469,7 @@ nav {
   <div class="sec" id="s4">
     <div class="final-pre">Ready to launch?</div>
     <div class="final-big">LET'S<br>BUILD IT.</div>
-    <div class="final-sub">Tell us about your business and we'll have a premium custom site live within 48–72 hours.</div>
+    <div class="final-sub">Tell us about your business and we'll have a premium custom site live within an average of 72 hours.</div>
     <div class="final-cta-row">
       <a href="contact.html" class="btn btn-a">Start Your Project</a>
       <a href="index.html" class="btn btn-b">Back to Home</a>

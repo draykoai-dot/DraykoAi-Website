@@ -114,14 +114,41 @@
     .form-group textarea { resize: vertical; min-height: 120px; }
 
     .btn-submit {
-      width: 100%; padding: 1rem; background: var(--orange); color: white; border: none;
-      border-radius: 6px; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;
+      --bx: -999px; --by: -999px; --hue: 260; --spot-a: 0;
+      width: 100%; padding: 1rem;
+      background-image: radial-gradient(200px 200px at var(--bx) var(--by), hsl(var(--hue) 100% 65% / calc(0.22 * var(--spot-a))), transparent);
+      background-color: #07070e;
+      color: #e8eaf0; border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;
       letter-spacing: .14em; text-transform: uppercase; cursor: pointer;
-      transition: all .3s; box-shadow: 0 0 28px rgba(232,114,12,.35);
+      position: relative; overflow: visible;
+      box-shadow: 0 4px 24px rgba(0,0,0,.6);
+      transition: transform .15s ease-out, box-shadow .3s;
       margin-top: .5rem;
     }
-    .btn-submit:hover { background: var(--orange-lite); box-shadow: 0 0 50px rgba(232,114,12,.6); transform: translateY(-2px); }
+    .btn-submit:hover { box-shadow: 0 8px 32px rgba(0,0,0,.75); transform: translateY(-2px); }
     .btn-submit:active { transform: translateY(0); }
+    .btn-submit::before {
+      content: ""; pointer-events: none; position: absolute;
+      inset: -1px; border-radius: 11px; padding: 1px;
+      background: radial-gradient(
+        130px 130px at calc(var(--bx) + 1px) calc(var(--by) + 1px),
+        hsl(var(--hue) 100% 70% / calc(0.95 * var(--spot-a))), transparent 100%
+      );
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+    }
+    .btn-submit::after {
+      content: ""; pointer-events: none; position: absolute;
+      inset: -4px; border-radius: 14px;
+      background: radial-gradient(
+        100px 100px at calc(var(--bx) + 4px) calc(var(--by) + 4px),
+        hsl(var(--hue) 100% 60% / calc(0.4 * var(--spot-a))), transparent
+      );
+      filter: blur(10px); z-index: -1;
+    }
 
     .form-note { margin-top: 1rem; text-align: center; color: rgba(255,255,255,.3); font-size: .8rem; }
 
@@ -276,17 +303,14 @@
           <label for="service">Service Interested In *</label>
           <select id="service" required>
             <option value="" disabled selected>Select a service...</option>
+            <option value="website">Custom Premium Built Website</option>
             <option value="voice">AI Voice Agents</option>
-            <option value="crm">CRM & Calendar Integration</option>
-            <option value="website">AI Website Builder</option>
-            <option value="full">Full AI Automation Suite</option>
-            <option value="other">Other / General Inquiry</option>
           </select>
         </div>
 
         <div class="form-group">
           <label for="msg">Message *</label>
-          <textarea id="msg" placeholder="Tell us about your business and what you're looking to automate..." required></textarea>
+          <textarea id="msg" placeholder="Tell us about your business and what you're looking for in a website..." required></textarea>
         </div>
 
         <button type="submit" class="btn-submit">Send Message →</button>
@@ -310,21 +334,21 @@
     </div>
 
     <div class="info-card">
-      <div class="info-ico">📞</div>
-      <h3>Book a Free Demo Call</h3>
-      <p>See our AI Voice Agent live in action. We'll run a full demo tailored to your industry — no commitment required.</p>
+      <div class="info-ico">🌐</div>
+      <h3>Premium Custom Websites</h3>
+      <p>We build conversion-first websites with 3D animations and smooth scroll effects — designed to make your brand unforgettable and turn visitors into clients.</p>
     </div>
 
     <div class="info-card">
       <div class="info-ico">✉️</div>
       <h3>Email Us Directly</h3>
-      <p>Prefer email? Reach us at <a href="mailto:hello@draykoai.net">hello@draykoai.net</a> — we respond within 24 hours on business days.</p>
+      <p>Prefer email? Reach us at <a href="mailto:draykoai@gmail.com">draykoai@gmail.com</a> — we respond within 24 hours on business days.</p>
     </div>
 
     <div class="info-card">
       <div class="info-ico">⚡</div>
       <h3>Fast Turnaround</h3>
-      <p>Most AI Voice Agent setups are live within <strong style="color:var(--orange)">5–7 business days</strong>. AI websites delivered in 48–72 hours.</p>
+      <p>Your custom website goes from concept to live in an <strong style="color:var(--orange)">average of 72 hours</strong> — no drawn-out timelines, no missed deadlines.</p>
     </div>
 
     <div class="booking-card">
@@ -345,7 +369,7 @@
   <div class="foot-grid">
     <div class="foot-brand">
       <img src="DRAYKO AI new LOGO.png" alt="Drayko AI" />
-      <p>Empowering businesses with humanlike AI automation that answers, books, and converts — 24/7.</p>
+      <p>Empowering businesses with AI automation for better conversions and more leads.</p>
     </div>
     <div class="foot-col">
       <h4>Navigation</h4>
@@ -361,7 +385,7 @@
       <h4>Contact</h4>
       <ul>
         <li><a href="contact.html">Book a Call</a></li>
-        <li><a href="mailto:hello@draykoai.net">hello@draykoai.net</a></li>
+        <li><a href="mailto:draykoai@gmail.com">draykoai@gmail.com</a></li>
         <li><a href="https://www.draykoai.net">draykoai.net</a></li>
         <li><a href="#">LinkedIn</a></li>
         <li><a href="#">Instagram</a></li>
@@ -477,6 +501,26 @@ gsap.set('.reveal-left', { opacity:0, x:-30 });
 gsap.to('.info-card, .booking-card, .dragon-divider', {
   opacity:1, x:0, duration:.7, stagger:.15, ease:'power3.out',
   scrollTrigger: { trigger: '.info-panel', start: 'top 80%' }
+});
+
+/* ── SPOTLIGHT BUTTON ── */
+const SPOT_PROX = 130;
+document.addEventListener('mousemove', e => {
+  const cx = e.clientX, cy = e.clientY;
+  document.querySelectorAll('.btn-submit').forEach(btn => {
+    const r = btn.getBoundingClientRect();
+    const nx = Math.max(r.left, Math.min(cx, r.right));
+    const ny = Math.max(r.top,  Math.min(cy, r.bottom));
+    const dist = Math.hypot(cx - nx, cy - ny);
+    if (dist > SPOT_PROX) {
+      btn.style.setProperty('--spot-a', '0');
+    } else {
+      btn.style.setProperty('--bx', (nx - r.left) + 'px');
+      btn.style.setProperty('--by', (ny - r.top)  + 'px');
+      btn.style.setProperty('--spot-a', (1 - dist / SPOT_PROX).toFixed(3));
+      btn.style.setProperty('--hue', Math.round(220 + (cx / window.innerWidth) * 120));
+    }
+  });
 });
 
 /* ── NAV ── */

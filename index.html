@@ -123,10 +123,8 @@
     .hero-title .fire { color: var(--orange); display: block; }
     .hero-brand-tag {
       font-size: clamp(1.6rem, 3vw, 2.6rem); font-weight: 900; letter-spacing: .04em;
-      text-transform: uppercase; color: var(--orange);
-      text-shadow:
-        0 0 28px rgba(232,114,12,0.55),
-        0 0 70px rgba(232,114,12,0.2);
+      text-transform: uppercase; color: rgba(200,210,225,0.55);
+      text-shadow: 0 0 20px rgba(160,180,210,0.55), 0 0 60px rgba(160,180,210,0.22), 0 0 120px rgba(160,180,210,0.1);
       opacity: 0; transform: translateY(16px);
       margin-bottom: 1.6rem;
     }
@@ -137,8 +135,47 @@
     .hero-ctas { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; opacity: 0; transform: translateY(20px); }
 
     .btn { display: inline-block; font-family: 'Inter', sans-serif; font-weight: 700; font-size: .95rem; letter-spacing: .12em; text-transform: uppercase; text-decoration: none; border-radius: 4px; padding: .9rem 2.2rem; transition: all .3s; cursor: pointer; border: none; }
-    .btn-fire { background: var(--orange); color: #fff; box-shadow: 0 0 28px rgba(232,114,12,.4), 0 4px 20px rgba(0,0,0,.3); }
-    .btn-fire:hover { background: var(--orange-lite); box-shadow: 0 0 55px rgba(232,114,12,.7); transform: translateY(-2px); }
+    .btn-fire {
+      --bx: -999px; --by: -999px; --hue: 260; --spot-a: 0;
+      background-image: radial-gradient(200px 200px at var(--bx) var(--by), hsl(var(--hue) 100% 65% / calc(0.22 * var(--spot-a))), transparent);
+      background-color: #07070e;
+      color: #e8eaf0;
+      padding: 1.15rem 3.8rem;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.1);
+      position: relative; overflow: visible;
+      box-shadow: 0 4px 24px rgba(0,0,0,.6);
+      font-size: 1rem;
+      transform-style: preserve-3d;
+      transition: transform .15s ease-out, box-shadow .3s;
+    }
+    .btn-fire:hover { box-shadow: 0 8px 32px rgba(0,0,0,.75); transform: translateY(-2px); }
+    .btn-tilt-wrap { display: inline-block; perspective: 600px; }
+    /* Spotlight border — gradient masked to border ring only */
+    .btn-fire::before {
+      content: ""; pointer-events: none; position: absolute;
+      inset: -1px; border-radius: 11px; padding: 1px;
+      background: radial-gradient(
+        130px 130px at calc(var(--bx) + 1px) calc(var(--by) + 1px),
+        hsl(var(--hue) 100% 70% / calc(0.95 * var(--spot-a))), transparent 100%
+      );
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+    }
+    /* Outer soft blur halo */
+    .btn-fire::after {
+      content: ""; pointer-events: none; position: absolute;
+      inset: -4px; border-radius: 14px;
+      background: radial-gradient(
+        100px 100px at calc(var(--bx) + 4px) calc(var(--by) + 4px),
+        hsl(var(--hue) 100% 60% / calc(0.4 * var(--spot-a))), transparent
+      );
+      filter: blur(10px);
+      z-index: -1;
+    }
+
     .btn-ghost { background: transparent; color: var(--white); border: 1.5px solid rgba(255,255,255,.25); }
     .btn-ghost:hover { border-color: var(--orange); color: var(--orange); box-shadow: 0 0 22px rgba(232,114,12,.18); transform: translateY(-2px); }
 
@@ -401,6 +438,12 @@
 </head>
 <body>
 
+<!-- Ziyad Changes Banner -->
+<div style="position:fixed;top:0;left:0;right:0;z-index:99999;background:#e8720c;color:#fff;text-align:center;padding:8px 16px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;box-shadow:0 2px 12px rgba(0,0,0,.4);">
+  ⚡ Ziyad Changes — Preview Only
+</div>
+<div style="height:36px"></div>
+
 <!-- Cursor -->
 <div id="cur"></div>
 <div id="cur-ring"></div>
@@ -441,8 +484,9 @@
     <p class="hero-brand-tag">Drayko AI Solutions</p>
     <p class="hero-sub">Custom built premium animated websites and humanlike AI agents — at a fraction of the cost.</p>
     <div class="hero-ctas">
-      <a href="contact.html" class="btn btn-fire">Book a Free Call</a>
-      <a href="voice-ai.html" class="btn btn-ghost">Explore AI Voice Agents</a>
+      <div class="btn-tilt-wrap">
+        <a href="contact.html" class="btn btn-fire">Book a Free Call</a>
+      </div>
     </div>
   </div>
   <div class="scroll-hint">
@@ -459,8 +503,8 @@
     <p class="wb-sub reveal">Premium custom websites with 3D animations and conversion-first design — no compromises.</p>
     <div class="wb-stats">
       <div class="wb-stat">
-        <div class="wb-stat-n">48–72h</div>
-        <div class="wb-stat-l">Delivery</div>
+        <div class="wb-stat-n">~72h</div>
+        <div class="wb-stat-l">Avg. Delivery</div>
       </div>
       <div class="wb-stat">
         <div class="wb-stat-n">100%</div>
@@ -490,7 +534,7 @@
   <div class="foot-grid">
     <div class="foot-brand">
       <img src="DRAYKO AI new LOGO.png" alt="Drayko AI" />
-      <p>Empowering businesses with humanlike AI automation that answers, books, and converts — 24/7.</p>
+      <p>Empowering businesses with AI automation for better conversions and more leads.</p>
     </div>
     <div class="foot-col">
       <h4>Navigation</h4>
@@ -505,7 +549,7 @@
       <h4>Contact</h4>
       <ul>
         <li><a href="contact.html">Book a Call</a></li>
-        <li><a href="mailto:hello@draykoai.net">hello@draykoai.net</a></li>
+        <li><a href="mailto:draykoai@gmail.com">draykoai@gmail.com</a></li>
         <li><a href="https://www.draykoai.net">draykoai.net</a></li>
         <li><a href="#">LinkedIn</a></li>
         <li><a href="#">Instagram</a></li>
@@ -687,6 +731,43 @@ window.addEventListener('scroll', () => {
 /* ───── MOBILE MENU ───── */
 document.getElementById('hbg').addEventListener('click', () => {
   document.getElementById('navLinks').classList.toggle('open');
+});
+
+/* ───── SPOTLIGHT BUTTON (proximity-aware) ───── */
+const SPOT_PROX = 130; // px outside button where glow starts bleeding in
+document.addEventListener('mousemove', e => {
+  const cx = e.clientX, cy = e.clientY;
+  document.querySelectorAll('.btn-fire').forEach(btn => {
+    const r = btn.getBoundingClientRect();
+    // Nearest point on button rect to cursor
+    const nx = Math.max(r.left, Math.min(cx, r.right));
+    const ny = Math.max(r.top,  Math.min(cy, r.bottom));
+    const dist = Math.hypot(cx - nx, cy - ny);
+    if (dist > SPOT_PROX) {
+      btn.style.setProperty('--spot-a', '0');
+    } else {
+      // bx/by = cursor pos clamped to button bounds, relative to button top-left
+      btn.style.setProperty('--bx', (nx - r.left) + 'px');
+      btn.style.setProperty('--by', (ny - r.top)  + 'px');
+      btn.style.setProperty('--spot-a', (1 - dist / SPOT_PROX).toFixed(3));
+      btn.style.setProperty('--hue', Math.round(220 + (cx / window.innerWidth) * 120));
+    }
+  });
+});
+
+/* ───── BUTTON 3D TILT ───── */
+document.querySelectorAll('.btn-tilt-wrap').forEach(wrap => {
+  const btn = wrap.querySelector('.btn-fire');
+  wrap.addEventListener('mousemove', e => {
+    const r = btn.getBoundingClientRect();
+    const dx = (e.clientX - (r.left + r.width  / 2)) / (r.width  / 2);
+    const dy = (e.clientY - (r.top  + r.height / 2)) / (r.height / 2);
+    btn.style.transform = `perspective(600px) rotateY(${dx * 14}deg) rotateX(${-dy * 9}deg) scale(1.05)`;
+  });
+  wrap.addEventListener('mouseleave', () => {
+    btn.style.transform = 'perspective(600px) rotateY(0deg) rotateX(0deg) scale(1)';
+    setTimeout(() => { btn.style.transform = ''; }, 200);
+  });
 });
 
 /* ───── ANCHOR SMOOTH SCROLL ───── */
