@@ -220,7 +220,7 @@
     @media (max-width: 768px) {
       nav { padding: 1rem 1.5rem; }
       nav.scrolled { padding: .7rem 1.5rem; }
-      .nav-links { display: none; position: absolute; top: 100%; left: 0; right: 0; background: rgba(8,15,28,.98); flex-direction: column; padding: 2rem 1.5rem; gap: 1.5rem; border-bottom: 1px solid var(--border); }
+      .nav-links { display: none; position: absolute; top: 100%; left: 0; right: 0; background: rgba(8,15,28,.98); flex-direction: column; padding: 2rem 1.5rem; gap: 1.5rem; border-bottom: 1px solid var(--border); align-items: center; }
       .nav-links.open { display: flex; }
       .hamburger { display: flex; }
       #contact-hero { padding: 10rem 1.5rem 5rem; }
@@ -242,10 +242,8 @@
     <div class="nav-brand-txt">DRAYKO <small>AI Solutions</small></div>
   </a>
   <ul class="nav-links" id="navLinks">
-    <li><a href="index.html#services">Services</a></li>
-    <li><a href="index.html#how">How It Works</a></li>
-    <li><a href="index.html#why">Why Drayko</a></li>
-    <li><a href="contact.html">Contact</a></li>
+    <li><a href="voice-ai.html">AI Voice Agents</a></li>
+    <li><a href="websites.html">AI Websites</a></li>
     <li><a href="contact.html" class="nav-cta">Book a Call</a></li>
   </ul>
   <div class="hamburger" id="hbg">
@@ -270,7 +268,6 @@
   <div class="form-panel reveal-left">
     <div id="formWrap">
       <h2>Send Us a Message</h2>
-      <p>Fill out the form below and our team will get back to you within 24 hours.</p>
       <form id="contactForm" novalidate>
         <div class="form-row">
           <div class="form-group">
@@ -330,7 +327,6 @@
 
     <div class="dragon-divider">
       <img src="DRAYKO AI new LOGO.png" alt="Drayko AI" />
-      <p>"Unleash AI. Dominate your market."</p>
     </div>
 
     <div class="info-card">
@@ -454,17 +450,6 @@ const mat = new THREE.PointsMaterial({
 });
 scene.add(new THREE.Points(geo, mat));
 
-/* Logo watermark — deep background */
-const logoTex = new THREE.TextureLoader().load('DRAYKO AI new LOGO.png');
-const logoMat = new THREE.SpriteMaterial({
-  map: logoTex, transparent: true, opacity: .06,
-  blending: THREE.NormalBlending, depthWrite: false
-});
-const logoSprite = new THREE.Sprite(logoMat);
-logoSprite.scale.set(4.5, 4.5, 1);
-logoSprite.position.set(0, 0, -4);
-scene.add(logoSprite);
-
 let mnx=0, tick=0;
 document.addEventListener('mousemove', e => { mnx = (e.clientX/innerWidth - .5) * 2; });
 
@@ -476,7 +461,6 @@ const heroEl = document.getElementById('contact-hero');
   const pts = scene.children[0];
   pts.rotation.y = tick * .06 + mnx * .05;
   pts.rotation.x = tick * .03;
-  logoMat.opacity = .045 + Math.sin(tick * .4) * .015;
   renderer.render(scene, cam);
 })();
 
