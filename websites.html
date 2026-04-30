@@ -283,8 +283,7 @@ nav {
 #s2.active .pillars-grid { opacity:1; transform:translateY(0); }
 .pill {
   padding:48px 36px;
-  background: rgba(4,7,14,0.82);
-  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  background: rgba(4,7,14,0.90);
   border-top:1px solid rgba(245,160,32,0.22);
   border-left:1px solid rgba(245,160,32,0.08);
   border-right:1px solid rgba(245,160,32,0.08);
@@ -405,6 +404,59 @@ nav {
   letter-spacing:.2em; color:var(--muted);
 }
 #counter span { color:var(--gold); }
+
+/* ── HAMBURGER ── */
+.hamburger-ws {
+  display: none; flex-direction: column; gap: 5px;
+  background: none; border: none; cursor: pointer; padding: 4px; z-index: 210;
+}
+.hamburger-ws span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: all .3s; }
+
+/* ── MOBILE ── */
+@media (max-width: 768px) {
+  /* Nav */
+  nav { padding: .85rem 1.25rem; }
+  .nav-r {
+    display: none; position: absolute; top: 100%; left: 0; right: 0;
+    flex-direction: column; align-items: flex-start;
+    background: rgba(7,4,13,.97); padding: 1.4rem 1.25rem;
+    gap: 1.2rem; border-bottom: 1px solid rgba(232,114,12,0.2); z-index: 199;
+  }
+  .nav-r.open { display: flex; }
+  .hamburger-ws { display: flex; }
+
+  /* Dots & counter */
+  #dots { right: 10px; gap: 8px; }
+  #counter { bottom: 12px; right: 16px; font-size: 11px; }
+
+  /* Slide 2 — pillars: single column, compact, below nav */
+  #s2 {
+    padding: 76px 1rem 1rem;
+    justify-content: flex-start;
+    align-items: stretch;
+  }
+  .pillars-title { margin-bottom: 14px; }
+  .pillars-grid { grid-template-columns: 1fr; gap: 2px; }
+  .pill { padding: 18px 16px; }
+  .pill-n { font-size: 34px; margin-bottom: 6px; }
+  .pill-h { font-size: 17px; margin-bottom: 8px; }
+  .pill-p { font-size: 12px; line-height: 1.65; }
+
+  /* Slide 3 — stats: 2×2 wrap */
+  .stats-row {
+    flex-wrap: wrap; justify-content: center; gap: 12px; padding: 0 1.5rem;
+  }
+  .stat { flex: 0 0 calc(50% - 6px); }
+  .stat-div { display: none; }
+  .stat-n { font-size: clamp(34px, 10vw, 70px); }
+  .stat-l { font-size: 9px; }
+
+  /* Buttons */
+  .btn-fire { padding: .85rem 1.6rem; font-size: .88rem; }
+  .hero-cta { flex-direction: column; align-items: center; gap: 12px; }
+  .final-cta-row { flex-direction: column; align-items: center; gap: 12px; }
+  .final-big { font-size: clamp(48px, 16vw, 100px); }
+}
 </style>
 </head>
 <body>
@@ -420,12 +472,15 @@ nav {
     <img src="DRAYKO AI new LOGO.png" alt="Drayko AI" />
     <div class="nav-brand-txt">DRAYKO <small>AI Solutions</small></div>
   </a>
-  <div class="nav-r">
+  <div class="nav-r" id="navR">
     <a href="voice-ai.html">AI Voice Agents</a>
     <a href="websites.html">AI Websites</a>
     <a href="contact.html">Contact</a>
     <a href="contact.html" class="nav-cta">Book a Call</a>
   </div>
+  <button class="hamburger-ws" id="hbgWs" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
 <div id="scroller">
@@ -545,29 +600,27 @@ document.addEventListener('mousemove',e=>{cx=e.clientX;cy=e.clientY;cur.style.le
 const secs = document.querySelectorAll('.sec');
 const dots = document.querySelectorAll('.dot');
 const curN = document.getElementById('cur-n');
-let cur_s = 0, animating = false;
+let cur_s = 0, locked = false;
 
 function goTo(i){
-  if(i===cur_s||i<0||i>=secs.length||animating) return;
-  animating=true;
+  if(i===cur_s||i<0||i>=secs.length||locked) return;
+  locked=true;
   secs[cur_s].classList.remove('active');
   dots[cur_s].classList.remove('on');
   cur_s=i;
   secs[cur_s].classList.add('active');
   dots[cur_s].classList.add('on');
   curN.textContent=String(cur_s+1).padStart(2,'0');
-  setTimeout(()=>animating=false,700);
+  // transition(600ms) + dwell on screen(500ms) before next slide allowed
+  setTimeout(()=>{ locked=false; }, 1100);
 }
 
 document.getElementById('seeMore').addEventListener('click',()=>goTo(1));
 
-let wheelTimer;
 window.addEventListener('wheel',e=>{
-  clearTimeout(wheelTimer);
-  wheelTimer=setTimeout(()=>{
-    if(e.deltaY>0) goTo(cur_s+1);
-    else goTo(cur_s-1);
-  },60);
+  if(locked) return;
+  if(e.deltaY>0) goTo(cur_s+1);
+  else goTo(cur_s-1);
 },{passive:true});
 
 window.addEventListener('keydown',e=>{
@@ -583,6 +636,7 @@ window.addEventListener('touchend',e=>{
 },{passive:true});
 
 dots.forEach(d=>d.addEventListener('click',()=>goTo(+d.dataset.i)));
+document.getElementById('hbgWs').addEventListener('click',()=>document.getElementById('navR').classList.toggle('open'));
 
 // ── SPOTLIGHT BUTTON ──
 const SPOT_PROX = 130;

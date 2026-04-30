@@ -37,7 +37,7 @@
     nav.scrolled { padding: .65rem 3rem; background: rgba(8,15,28,.95); }
     .nav-brand { display: flex; align-items: center; gap: .75rem; text-decoration: none; }
     .nav-brand img { height: 46px; }
-    .nav-brand-txt { font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700; line-height: 1.15; }
+    .nav-brand-txt { font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700; line-height: 1.15; color: var(--white); }
     .nav-brand-txt small { display: block; font-size: .6rem; font-family: 'Inter', sans-serif; letter-spacing: .35em; color: var(--orange); font-weight: 600; text-transform: uppercase; }
     .nav-links { display: flex; align-items: center; gap: 2.2rem; list-style: none; }
     .nav-links a { color: var(--dim); text-decoration: none; font-size: .88rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; transition: color .3s; position: relative; }
@@ -469,18 +469,11 @@ const mat = new THREE.PointsMaterial({ size: .038, vertexColors: true, transpare
 const pts = new THREE.Points(geo, mat);
 scene.add(pts);
 
-const logoTex = new THREE.TextureLoader().load('DRAYKO AI new LOGO.png');
-const logoMat = new THREE.SpriteMaterial({ map: logoTex, transparent: true, opacity: .16, blending: THREE.AdditiveBlending, depthWrite: false });
-const logoSprite = new THREE.Sprite(logoMat);
-logoSprite.scale.set(7, 7, 1); logoSprite.position.set(0, 0, -3.5);
-scene.add(logoSprite);
-
 let mnx = 0, mny = 0, tick = 0;
 document.addEventListener('mousemove', e => { mnx = (e.clientX/innerWidth-.5)*2; mny = -(e.clientY/innerHeight-.5)*2; });
 (function render() {
   requestAnimationFrame(render); tick += .005;
   pts.rotation.y = tick * .12 + mnx * .1; pts.rotation.x = mny * .05;
-  logoMat.opacity = .13 + Math.sin(tick * .35) * .04;
   const pa = geo.attributes.position.array;
   for (let i = 0; i < N; i += 15) { const a = ang[i] + tick * (.28-(i/N)*.14); pa[i*3] = Math.cos(a)*rad[i]; pa[i*3+2] = Math.sin(a)*rad[i]-2.5; }
   geo.attributes.position.needsUpdate = true;
