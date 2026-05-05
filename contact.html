@@ -516,15 +516,17 @@ document.getElementById('hbg').addEventListener('click', ()=>{
 });
 
 /* ── FORM SUBMIT ── */
-document.getElementById('contactForm').addEventListener('submit', function(e) {
+document.getElementById('contactForm').addEventListener('submit', async function(e) {
   e.preventDefault();
   const fname   = document.getElementById('fname').value.trim();
+  const lname   = document.getElementById('lname').value.trim();
+  const biz     = document.getElementById('biz').value.trim();
   const email   = document.getElementById('email').value.trim();
+  const phone   = document.getElementById('phone').value.trim();
   const service = document.getElementById('service').value;
   const msg     = document.getElementById('msg').value.trim();
 
   if (!fname || !email || !service || !msg) {
-    // Simple shake on empty required fields
     this.querySelectorAll(':invalid').forEach(el => {
       el.style.borderColor = '#f87171';
       el.addEventListener('focus', () => el.style.borderColor = '', { once: true });
@@ -532,13 +534,43 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
     return;
   }
 
-  // Show success
-  gsap.to('#formWrap', { opacity:0, y:-20, duration:.4, ease:'power2.in', onComplete: () => {
-    document.getElementById('formWrap').style.display = 'none';
-    const s = document.getElementById('formSuccess');
-    s.style.display = 'block';
-    gsap.from(s, { opacity:0, y:20, duration:.6, ease:'power3.out' });
-  }});
+  const btn = this.querySelector('.btn-submit');
+  btn.textContent = 'Sending…';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({
+        access_key: '076f8308-62fd-4ebc-a5f2-452c60427209',
+        subject: `New Drayko AI Inquiry — ${service} from ${fname} ${lname}`,
+        from_name: `${fname} ${lname}`,
+        name:    `${fname} ${lname}`,
+        email,
+        phone:   phone || 'Not provided',
+        business: biz,
+        service,
+        message: msg
+      })
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      gsap.to('#formWrap', { opacity:0, y:-20, duration:.4, ease:'power2.in', onComplete: () => {
+        document.getElementById('formWrap').style.display = 'none';
+        const s = document.getElementById('formSuccess');
+        s.style.display = 'block';
+        gsap.from(s, { opacity:0, y:20, duration:.6, ease:'power3.out' });
+      }});
+    } else {
+      btn.textContent = 'Failed — Try Again';
+      btn.disabled = false;
+    }
+  } catch {
+    btn.textContent = 'Failed — Try Again';
+    btn.disabled = false;
+  }
 });
 </script>
 </body>
